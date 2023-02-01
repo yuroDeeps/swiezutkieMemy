@@ -1,0 +1,9 @@
+{
+    "name": "1358876/swiezutkie-memy",
+    "autoload": {
+        "psr-4": {
+            "1358876\\SwiezutkieMemy\\": "src/"
+        }
+    },
+    "require": {}
+}
