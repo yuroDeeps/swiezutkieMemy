@@ -18,14 +18,23 @@
 <?php 
     if(isset($_POST['submit']))
     {
+        $fileName = $_FILES['uploadedFile']['name'];
+
         $targetDir = "img/";
-        $targetFile = $targetDir . $_FILES['uploadedFile']['name'];
-        if(file_exists($targetFile))
+
+        $targetExtension = pathinfo($fileName, PATHINFO_EXTENSION);
+        $targetExtension = strtolower($targetExtension);
+
+        $targetFileName = $fileName . hrtime(true);
+        $targetFileName = hash("sha256", $targetFileName);
+
+        $targetUrl = $targetDir . $targetFileName . "." . $targetExtension;      
+        if(file_exists($targetUrl))
         {
             die("Plik o tej nazwie już istnieje");
         }
-        move_uploaded_file($_FILES["uploadedFile"]["tmp_name"], $targetFile);
-        // var_dump($_FILES);
+        move_uploaded_file($_FILES["uploadedFile"]["tmp_name"], $targetUrl);
+        var_dump($_FILES);
     }
 ?>
 </body>
