@@ -24,8 +24,14 @@
 
         $imageInfo = getimagesize($_FILES["uploadedFile"]["tmp_name"]);
         if(!is_array($imageInfo)) {
-            die("Nieprawidłowy format obrazxu!");
+            die("Nieprawidłowy format obrazu!");
         }
+
+        $imgString = file_get_contents($_FILES["uploadedFile"]["tmp_name"]);
+
+        $gdImage = imagecreatefromstring($imgString);
+
+
 
         $targetExtension = pathinfo($fileName, PATHINFO_EXTENSION);
         $targetExtension = strtolower($targetExtension);
@@ -38,8 +44,10 @@
         {
             die("Plik o tej nazwie już istnieje");
         }
-        move_uploaded_file($_FILES["uploadedFile"]["tmp_name"], $targetUrl);
-        var_dump($_FILES);
+        // move_uploaded_file($_FILES["uploadedFile"]["tmp_name"], $targetUrl);
+        // var_dump($_FILES);
+        $targetUrl = $targetDir . $targetFileName . ".webp";  
+        imagewebp($gdImage, $targetUrl);
     }
 ?>
 </body>
