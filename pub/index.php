@@ -22,6 +22,11 @@
 
         $targetDir = "img/";
 
+        $imageInfo = getimagesize($_FILES["uploadedFile"]["tmp_name"]);
+        if(!is_array($imageInfo)) {
+            die("Nieprawidłowy format obrazxu!");
+        }
+
         $targetExtension = pathinfo($fileName, PATHINFO_EXTENSION);
         $targetExtension = strtolower($targetExtension);
 
