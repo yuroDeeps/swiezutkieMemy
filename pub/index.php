@@ -48,6 +48,19 @@
         // var_dump($_FILES);
         $targetUrl = $targetDir . $targetFileName . ".webp";  
         imagewebp($gdImage, $targetUrl);
+
+        $db = new mysqli('localhost', 'root', '', 'memy');
+
+        $fileName = $targetFileName . "webp";
+
+        $dateTime = DATE("Y-m-d H:i:s");
+
+        $sql = "INSERT INTO post (timestamp, filename)
+            VALUES ('$dateTime', '$fileName')";
+
+        $db->query($sql);
+
+        $db->close();
     }
 ?>
 </body>
