@@ -16,6 +16,9 @@
     </form>
 
 <?php 
+
+    $db = new mysqli('localhost', 'root', '', 'memy');
+
     if(isset($_POST['submit']))
     {
         $fileName = $_FILES['uploadedFile']['name'];
@@ -49,9 +52,7 @@
         $targetUrl = $targetDir . $targetFileName . ".webp";  
         imagewebp($gdImage, $targetUrl);
 
-        $db = new mysqli('localhost', 'root', '', 'memy');
-
-        $fileName = $targetFileName . "webp";
+        $fileName = $targetFileName . ".webp";
 
         $dateTime = DATE("Y-m-d H:i:s");
 
@@ -62,6 +63,11 @@
 
         $db->close();
     }
+
+    
+
+
+
 ?>
 </body>
 </html>
