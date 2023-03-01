@@ -1,7 +1,7 @@
 <?php
 
 class Post {
-    static function upload(string $tempFileName) {
+    static function upload(string $tempFileName, string $title = "") {
         $uploadDir = "img/";
 
         $imageInfo = getimagesize($tempFileName);
@@ -26,6 +26,19 @@ class Post {
         $gdImage = @imagecreatefromstring($imgString);
 
         imagewebp($gdImage, $targetFileName);
+
+        global $db;
+
+        $ip = $_SERVER['REMOTE_ADDR'];
+
+        $dateTime = DATE("Y-m-d H:i:s");
+
+        $sql = "INSERT INTO post (timestamp, filename, ip, title)
+            VALUES ('$dateTime', '$targetFileName', '$ip', '$title')";
+
+        $db->query($sql);
+
+        $db->close();
     }
 }
 
