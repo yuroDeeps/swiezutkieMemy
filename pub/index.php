@@ -11,6 +11,12 @@
 <?php
 require('./../src/Post.class.php');
 require('./../src/config.php');
+
 if(isset($_POST['submit'])) 
     Post::upload($_FILES['uploadedFile']['tmp_name'], $_POST['title']);
+?>
+
+Wyniki:
+<?php 
+var_dump(Post::getPage());
 ?>
