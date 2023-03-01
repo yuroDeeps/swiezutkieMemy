@@ -56,8 +56,10 @@
 
         $dateTime = DATE("Y-m-d H:i:s");
 
-        $sql = "INSERT INTO post (timestamp, filename)
-            VALUES ('$dateTime', '$fileName')";
+        $ip = $_SERVER['REMOTE_ADDR'];
+
+        $sql = "INSERT INTO post (timestamp, filename, ip)
+            VALUES ('$dateTime', '$fileName', '$ip')";
 
         $db->query($sql);
 
