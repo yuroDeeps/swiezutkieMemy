@@ -20,6 +20,16 @@ class ComposerStaticInitd518227131fb87c9a59d51d5f10ba6e0
         ),
     );
 
+    public static $prefixesPsr0 = array (
+        'S' => 
+        array (
+            'Steampixel' => 
+            array (
+                0 => __DIR__ . '/..' . '/steampixel/simple-php-router/src',
+            ),
+        ),
+    );
+
     public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
     );
@@ -29,6 +39,7 @@ class ComposerStaticInitd518227131fb87c9a59d51d5f10ba6e0
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInitd518227131fb87c9a59d51d5f10ba6e0::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInitd518227131fb87c9a59d51d5f10ba6e0::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInitd518227131fb87c9a59d51d5f10ba6e0::$prefixesPsr0;
             $loader->classMap = ComposerStaticInitd518227131fb87c9a59d51d5f10ba6e0::$classMap;
 
         }, null, ClassLoader::class);

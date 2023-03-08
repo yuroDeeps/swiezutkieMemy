@@ -5,5 +5,7 @@
             "1358876\\SwiezutkieMemy\\": "src/"
         }
     },
-    "require": {}
+    "require": {
+        "steampixel/simple-php-router": "^0.7.1"
+    }
 }
