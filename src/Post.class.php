@@ -24,6 +24,23 @@ class Post {
                         $resultArray['timestamp']);
     }
 
+    static function getLast() : Post {
+ 
+        global $db;
+
+        $query = $db->prepare("SELECT * FROM post ORDER BY timestamp DESC LIMIT 1");
+
+        $query->execute();
+        
+        $result = $query->get_result();
+        
+        $row = $result->fetch_assoc();
+        
+        $p = new Post($row['id'], $row['filename'], $row['timestamp']);
+        
+        return $p; 
+    }
+
     static function getPage(int $pageNumber = 1, int $postsPerPage = 10) {
         global $db;
         $query = $db->prepare("SELECT * FROM post LIMIT 10 OFFSET ?");
