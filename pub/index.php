@@ -13,6 +13,15 @@ Route::add('/upload', function(){
     $twig->display("upload.html.twig");
 });
 
+Route::add('/upload', function(){
+    global $twig;
+
+    $tempFileName = $_FILES['uploadedFile']['tmp_name'];
+    Post::upload($tempFileName);
+
+    $twig->display("index.html.twig");
+}, 'post');
+
 Route::run('/swiezutkieMemy/pub');
 
 ?>
