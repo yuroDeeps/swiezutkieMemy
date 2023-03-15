@@ -4,6 +4,7 @@ class Post {
     private string $title;
     private string $imageUrl;
     private string $timeStamp;
+    private string $filename;
 
     function __construct(string $title, string $imageUrl, string $timeStamp)
     {
@@ -22,6 +23,14 @@ class Post {
         return new Post($resultArray['title'],
                         $resultArray['filename'],
                         $resultArray['timestamp']);
+    }
+
+    public function getFilename() : string {
+        return $this->imageUrl;
+    }
+
+    public function getTitle() {
+        return $this->title;
     }
 
     static function getLast() : Post {
@@ -58,7 +67,7 @@ class Post {
             return $postArray;
     }
 
-    static function upload(string $tempFileName, string $title = "") {
+    static function upload(string $tempFileName, string $title) {
         $uploadDir = "img/";
 
         $imageInfo = getimagesize($tempFileName);
@@ -90,8 +99,8 @@ class Post {
 
         $dateTime = DATE("Y-m-d H:i:s");
 
-        $sql = "INSERT INTO post (timestamp, filename, ip, title)
-            VALUES ('$dateTime', '$targetFileName', '$ip', '$title')";
+        $sql = "INSERT INTO post (timestamp, filename, title)
+            VALUES ('$dateTime', '$targetFileName','$title')";
 
         $db->query($sql);
 
