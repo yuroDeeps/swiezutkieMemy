@@ -1,29 +1,37 @@
 <?php
 
 class Post {
+    private int $id;
     private string $title;
     private string $imageUrl;
     private string $timeStamp;
     private string $filename;
+    private int $authorId;
+    private string $authorName;
 
-    function __construct(string $title, string $imageUrl, string $timeStamp)
+    function __construct(int $i, string $imageUrl, string $timeStamp, string $title, int $authorId)
     {
+        $this->id = $i;
         $this->title = $title;
         $this->imageUrl = $imageUrl;
         $this->timeStamp = $timeStamp;
+        $this->title = $title;
+        $this->authorId = $authorId;
+        global $db;
+        $this->authorName = User::getNameById($this->authorId);
     }
 
-    static function get(int $id) : Post {
-        global $db;
-        $query = $db->prepare("SELECT * FROM post WHERE id = ?");
-        $query->bind_param('i', $id);
-        $query->execute();
-        $result = $query->get_result();
-        $resultArray = $result->fetch_assoc();
-        return new Post($resultArray['title'],
-                        $resultArray['filename'],
-                        $resultArray['timestamp']);
-    }
+    // static function get(int $id) : Post {
+    //     global $db;
+    //     $query = $db->prepare("SELECT * FROM post WHERE id = ?");
+    //     $query->bind_param('i', $id);
+    //     $query->execute();
+    //     $result = $query->get_result();
+    //     $resultArray = $result->fetch_assoc();
+    //     return new Post($resultArray['title'],
+    //                     $resultArray['filename'],
+    //                     $resultArray['timestamp']);
+    // }
 
     public function getFilename() : string {
         return $this->imageUrl;
@@ -31,6 +39,10 @@ class Post {
 
     public function getTitle() {
         return $this->title;
+    }
+
+    public function getId() {
+        return $this->id;
     }
 
     static function getLast() : Post {
@@ -45,66 +57,76 @@ class Post {
         
         $row = $result->fetch_assoc();
         
-        $p = new Post($row['id'], $row['filename'], $row['timestamp']);
+        $p = new Post($row['id'], $row['filename'], $row['timestamp'], $row['title'], (int)$row['userId']);
         
         return $p; 
     }
 
-    static function getPage(int $pageNumber = 1, int $postsPerPage = 10) {
+    static function getPage(int $pageNumber = 1, int $postsPerPage = 10) : array {
         global $db;
-        $query = $db->prepare("SELECT * FROM post LIMIT 10 OFFSET ?");
-        $offset = ($pageNumber-1) * $postsPerPage;
-        $query->bind_param('i', $offset);
-        $query->execute();
-        $result = $query->get_result();
+
+        $q = $db->prepare("SELECT * FROM post WHERE removed = false ORDER BY timestamp DESC LIMIT ? OFFSET ?");
+        $offset = ($pageNumber -1) * $postsPerPage;
+        $q->bind_param('ii', $postsPerPage, $offset);
+        $q->execute();
+        $result = $q->get_result();
         $postArray = array();
-        while($row = $result->fetch_assoc()) {
-            $post = new Post($row['title'],
-                        $row['filename'],
-                        $row['timestamp']);
+        while($row = $result->fetch_array()) {
+        global $db;
+            $post = new Post($row['id'], $row['filename'], $row['timestamp'], $row['title'], $row['userId']);
             array_push($postArray, $post);
         }
-            return $postArray;
+        return $postArray;
     }
+    static function upload(string $tempFilename, string $title = "", int $userId) {
+        $targetDir = "img/";
 
-    static function upload(string $tempFileName, string $title) {
-        $uploadDir = "img/";
-
-        $imageInfo = getimagesize($tempFileName);
-
-        if(!is_array($imageInfo)) {
-            die("Nieprawidłowy format obrazu!");
+        $imageInfo = getimagesize($tempFilename);
+            
+        if (!is_array($imageInfo)) {
+            die("BŁĄD: Nieprawidłowy format obrazu");
         }
-
-        $randomSeed = rand(10000, 99999) . hrtime(true);
-
+        $randomSeed = rand(10000,99999) . hrtime(true);
         $hash = hash("sha256", $randomSeed);
 
-        $targetFileName = $uploadDir . $hash . ".webp";
-
-        if(file_exists($targetFileName))
-        {
-            die("Plik o tej nazwie już istnieje");
+        $targetFileName = $targetDir . $hash . ".webp";
+        if(file_exists($targetFileName)) {
+            die("BŁĄD: Plik o tej nazwie już istnieje");
         }
 
-        $imgString = file_get_contents($tempFileName);
+        $imageString = file_get_contents($tempFilename);
 
-        $gdImage = @imagecreatefromstring($imgString);
+        $gdImage = @imagecreatefromstring($imageString);
 
         imagewebp($gdImage, $targetFileName);
 
         global $db;
 
-        $ip = $_SERVER['REMOTE_ADDR'];
+        $q = "INSERT post (id, timestamp, filename, ip, title, userId, removed) VALUES (NULL, ?, ?, ?, ?, ?, false)";
+        $preparedQ = $db->prepare($q);
 
-        $dateTime = DATE("Y-m-d H:i:s");
+        $date = date('Y-m-d H:i:s');
+        $preparedQ->bind_param('ssssi', $date, $targetFileName, $_SERVER['REMOTE_ADDR'], $title, $userId);
+        $result = $preparedQ->execute();
+        if (!$result) {
+            die("Błąd bazy danych");
+        }
+    }
 
-        $sql = "INSERT INTO post (timestamp, filename, title)
-            VALUES ('$dateTime', '$targetFileName','$title')";
+    static function remove(int $id) : bool {
+        global $db;
+        $q = $db->prepare("UPDATE post SET removed = true WHERE id = ?");
+        $q->bind_param('i', $id);
+        if ($q->execute()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-        $db->query($sql);
-
-        $db->close();
+    public function getLikes() {
+        $likes = Likes::getLikes($this->getId());
+        return $likes;
     }
 }
 
