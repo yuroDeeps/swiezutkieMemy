@@ -1,4 +1,4 @@
-{%include 'header.html'%}
+{%include 'header.html.twig'%}
 <div id="pageContainer">
     <table>
         <tr>
@@ -14,9 +14,9 @@
             <td>{{ post.getTimestamp() }}</td>
             <td>{{ post.getTitle() }}</td>
             <td>{{ post.getAuthorName() }}</td>
-            <td><img src="{{ post.getFilename() }}" class="thumbnail"></td>
+            <td><img src="{{ post.getFilename() }}" width="200px" height="100px" class="thumbnail"></td>
         </tr>
     {% endfor %}
     </table>
 </div>
-{%include 'footer.html'%}
+{%include 'footer.html.twig'%}
