@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Czas generowania: 15 Mar 2023, 11:46
+-- Czas generowania: 26 Kwi 2023, 10:12
 -- Wersja serwera: 10.4.24-MariaDB
 -- Wersja PHP: 8.0.19
 
@@ -24,6 +24,27 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Struktura tabeli dla tabeli `likes`
+--
+
+CREATE TABLE `likes` (
+  `id` int(11) NOT NULL,
+  `post_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `value` int(8) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Zrzut danych tabeli `likes`
+--
+
+INSERT INTO `likes` (`id`, `post_id`, `user_id`, `value`) VALUES
+(5, 6, 1, 1),
+(6, 5, 1, -1);
+
+-- --------------------------------------------------------
+
+--
 -- Struktura tabeli dla tabeli `post`
 --
 
@@ -31,21 +52,49 @@ CREATE TABLE `post` (
   `id` int(11) NOT NULL,
   `timestamp` datetime NOT NULL,
   `filename` varchar(255) NOT NULL,
-  `title` varchar(255) NOT NULL
+  `ip` varchar(255) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `userId` int(255) NOT NULL,
+  `removed` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Zrzut danych tabeli `post`
 --
 
-INSERT INTO `post` (`id`, `timestamp`, `filename`, `title`) VALUES
-(2, '2023-03-15 11:33:25', 'img/eb574bf83a650dca20c3664b2ccb1d718b1df337bd48ba0e9d464cc8755526d0.webp', ''),
-(3, '2023-03-15 11:37:31', 'img/889a0a60e95d5680402d9fe8b2a3d4ae4191621f46b96a1fe232a3e2999dc293.webp', ''),
-(4, '2023-03-15 11:39:27', 'img/1cf7b5281704b70677ee9ae9b133dcbc32f524e1d7d32f8c12182419441385b8.webp', 'sento');
+INSERT INTO `post` (`id`, `timestamp`, `filename`, `ip`, `title`, `userId`, `removed`) VALUES
+(5, '2023-04-19 10:47:14', 'img/63f3901fa8bff8ccfbc7e25ac1068e05c54832ebbe064ac2cce0d953e52a5845.webp', '::1', 'kox', 1, 1),
+(6, '2023-04-19 10:56:23', 'img/9325e47c7553cedb64bc377bb3b3d85e8273dc5074f02d4901fa748f9c0bb53b.webp', '::1', 'Kox', 1, 1),
+(7, '2023-04-19 11:18:00', 'img/52b3c740be3a4777b2ea2fd4a5ff27eec8e5e00a964a69931a910eeb74fe32aa.webp', '::1', 'es', 1, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Struktura tabeli dla tabeli `user`
+--
+
+CREATE TABLE `user` (
+  `id` int(11) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Zrzut danych tabeli `user`
+--
+
+INSERT INTO `user` (`id`, `email`, `password`) VALUES
+(1, 'es@es', '$argon2i$v=19$m=65536,t=4,p=1$MUFVY3ViTjdyVnpINlBubA$rL1IhfP1M4XiHqomKrEdDTzFCt8/f+3/l5rjzjor/gg');
 
 --
 -- Indeksy dla zrzutów tabel
 --
+
+--
+-- Indeksy dla tabeli `likes`
+--
+ALTER TABLE `likes`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indeksy dla tabeli `post`
@@ -54,14 +103,32 @@ ALTER TABLE `post`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indeksy dla tabeli `user`
+--
+ALTER TABLE `user`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- AUTO_INCREMENT dla zrzuconych tabel
 --
+
+--
+-- AUTO_INCREMENT dla tabeli `likes`
+--
+ALTER TABLE `likes`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT dla tabeli `post`
 --
 ALTER TABLE `post`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT dla tabeli `user`
+--
+ALTER TABLE `user`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

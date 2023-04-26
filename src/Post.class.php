@@ -41,6 +41,13 @@ class Post {
         return $this->title;
     }
 
+    public function getTimestamp() {
+        return $this->timeStamp;
+    }
+    public function getAuthorName() {
+        return $this->authorName;
+    }
+
     public function getId() {
         return $this->id;
     }
